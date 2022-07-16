@@ -23,9 +23,11 @@ class RecipeDetailScreen extends StatelessWidget {
 
     final Recipe recipe = DUMMY_MEALS.firstWhere((x) => x.id == recipeId);
 
+    // Idea: convert this build method to Stateful Widget in separate file so that only build method of this widget is triggered when context is recalculated //
+    // (instead of build method of whole tree)
     Widget buildSectionTitle(BuildContext context, String text) {
       return Container(
-        margin: EdgeInsets.symmetric(vertical: 5),
+        margin: const EdgeInsets.symmetric(vertical: 5),
         child: Text(
           text,
           style: Theme.of(context).textTheme.bodyLarge,
@@ -49,65 +51,73 @@ class RecipeDetailScreen extends StatelessWidget {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('${recipe.title}'),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                height: 300,
-                width: double.infinity,
-                child: Image.network(recipe.imageUrl),
+      appBar: AppBar(
+        title: Text('${recipe.title}'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: 300,
+              width: double.infinity,
+              child: Image.network(recipe.imageUrl),
+            ),
+            buildSectionTitle(context, 'Ingredients'),
+            buildEnclosingContainer(
+              ListView.builder(
+                itemCount: recipe.ingredients.length,
+                itemBuilder: (ctx, index) {
+                  return Card(
+                    color: Theme.of(context).colorScheme.tertiary,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5.0, horizontal: 10.0),
+                      child: Text(recipe.ingredients[index]),
+                    ),
+                  );
+                },
               ),
-              buildSectionTitle(context, 'Ingredients'),
-              buildEnclosingContainer(
-                ListView.builder(
-                  itemCount: recipe.ingredients.length,
-                  itemBuilder: (ctx, index) {
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5.0, horizontal: 10.0),
-                        child: Text(recipe.ingredients[index]),
-                      ),
-                      color: Theme.of(context).colorScheme.tertiary,
-                    );
-                  },
-                ),
-              ),
-              buildSectionTitle(context, 'Steps'),
-              buildEnclosingContainer(
-                ListView.builder(
-                  itemCount: recipe.steps.length,
-                  itemBuilder: (ctx, index) {
-                    return Column(
-                      children: [
-                        ListTile(
-                          leading: CircleAvatar(
-                            child: Text('${(index + 1)}'),
-                          ),
-                          title: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5.0, horizontal: 10.0),
-                            child: Text(recipe.steps[index]),
-                          ),
+            ),
+            buildSectionTitle(context, 'Steps'),
+            buildEnclosingContainer(
+              ListView.builder(
+                itemCount: recipe.steps.length,
+                itemBuilder: (ctx, index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          child: Text('${(index + 1)}'),
                         ),
-                        Divider(),
-                      ],
-                    );
-                  },
-                ),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5.0, horizontal: 10.0),
+                          child: Text(recipe.steps[index]),
+                        ),
+                      ),
+                      Divider(),
+                    ],
+                  );
+                },
               ),
-              // ListView(
-              //   children: recipe.ingredients
-              //       .map((ingredient) =>
-              //           Text(ingredient, style: TextStyle(color: Colors.black)))
-              //       .toList(),
-              // )
-            ],
-          ),
-        ));
+            ),
+            // ListView(
+            //   children: recipe.ingredients
+            //       .map((ingredient) =>
+            //           Text(ingredient, style: TextStyle(color: Colors.black)))
+            //       .toList(),
+            // )
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.delete),
+        backgroundColor: Colors.black, //Theme.of(context).colorScheme.primary,
+        onPressed: () {
+          Navigator.of(context).pop(recipeId);
+        },
+      ),
+    );
 
     // return Text(recipe.title)
     // return ListView.builder(itemBuilder: (ctx, index) {

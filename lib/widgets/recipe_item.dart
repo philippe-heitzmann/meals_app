@@ -16,6 +16,7 @@ class RecipeItem extends StatelessWidget {
     required this.complexity,
     required this.duration,
     required this.imageUrl,
+    required this.removeItem,
   });
 
   final String id;
@@ -24,6 +25,7 @@ class RecipeItem extends StatelessWidget {
   final Complexity complexity;
   final int duration;
   final String imageUrl;
+  final Function removeItem;
 
   String get complexityText {
     switch (complexity) {
@@ -59,7 +61,10 @@ class RecipeItem extends StatelessWidget {
 
   Future _selectRecipe(BuildContext context) {
     return Navigator.of(context)
-        .pushNamed(RecipeDetailScreen.routeName, arguments: {'id': id});
+        .pushNamed(RecipeDetailScreen.routeName, arguments: {'id': id}).then(
+            (result) => {
+                  if (result != null) {removeItem(result)}
+                });
   }
 
   @override
@@ -104,7 +109,7 @@ class RecipeItem extends StatelessWidget {
                         overflow: TextOverflow.fade,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
               Padding(
