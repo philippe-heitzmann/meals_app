@@ -61,7 +61,6 @@ class _CategoryRecipesScreenState extends State<CategoryRecipesScreen> {
             complexity: categoryRecipes![index].complexity,
             duration: categoryRecipes![index].duration,
             imageUrl: categoryRecipes![index].imageUrl,
-            removeItem: _removeItem,
           );
         },
         itemCount: categoryRecipes!.length,

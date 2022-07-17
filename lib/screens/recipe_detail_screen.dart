@@ -10,8 +10,12 @@ class RecipeDetailScreen extends StatelessWidget {
   static const routeName = '/recipe-details';
   //const RecipeDetailScreen({Key? key}) : super(key: key);
 
-  // RecipeDetailScreen(); //{required this.ingredients, required this.steps}
+  RecipeDetailScreen(
+      {required this.toggleFavorites,
+      required this.isMealFavorite}); //{required this.ingredients, required this.steps}
 
+  final Function toggleFavorites;
+  final Function isMealFavorite;
   // List<String> ingredients;
   // List<String> steps;
 
@@ -111,12 +115,20 @@ class RecipeDetailScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.delete),
-        backgroundColor: Colors.black, //Theme.of(context).colorScheme.primary,
-        onPressed: () {
-          Navigator.of(context).pop(recipeId);
-        },
-      ),
+          backgroundColor:
+              Colors.black, //Theme.of(context).colorScheme.primary,
+          onPressed: () => toggleFavorites(recipeId),
+          child: isMealFavorite(recipeId)
+              ? const Icon(Icons.star)
+              : const Icon(Icons.star_border)),
+      //),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Icon(Icons.star),
+      //   backgroundColor: Colors.black, //Theme.of(context).colorScheme.primary,
+      //   onPressed: () {
+      //     Navigator.of(context).pop(recipeId);
+      //   },
+      // ),
     );
 
     // return Text(recipe.title)

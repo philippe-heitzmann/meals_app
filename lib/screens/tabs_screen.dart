@@ -5,19 +5,37 @@ import 'package:meals_app/screens/favorites_screen.dart';
 
 import './categories_screen.dart';
 import '../widgets/main_drawer.dart';
+import '../models/recipe.dart';
 
 class TabsScreen extends StatefulWidget {
-  const TabsScreen({Key? key}) : super(key: key);
+  const TabsScreen({Key? key, required this.favoritedMeals}) : super(key: key);
+
+  final List<Recipe> favoritedMeals;
 
   @override
   State<TabsScreen> createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  final List<Map<String, Object>> _screens = [
-    {'title': 'Categories', 'screen': CategoriesScreen()},
-    {'title': 'Favorites', 'screen': FavoritesScreen()}
-  ];
+  // @override
+  // void initState() {
+  //   _favoriteMeals = ;
+  // }
+
+  late List<Map<String, Object>> _screens;
+
+  @override
+  void initState() {
+    _screens = [
+      {'title': 'Categories', 'screen': CategoriesScreen()},
+      {
+        'title': 'Favorites',
+        'screen': FavoritesScreen(
+          favoritedMeals: widget.favoritedMeals,
+        )
+      }
+    ];
+  }
 
   int _currentIndex = 0;
 

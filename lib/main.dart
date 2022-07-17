@@ -30,12 +30,22 @@ class _MyAppState extends State<MyApp> {
     'vegetarian': false,
   };
 
+  bool _isMealFavorite(String recipeId) {
+    if (_favoritedMeals.any(
+      (element) => element.id == recipeId,
+    )) {
+      return true;
+    }
+    return false;
+  }
+
   List<Recipe> _availableMeals = DUMMY_MEALS;
+  List<Recipe> _favoritedMeals = []; //.sublist(0, 2);
 
   void _setFilters(Map<String, bool> filterData) {
     setState(() {
       _filters = filterData;
-      _availableMeals.where((recipe) {
+      _availableMeals = DUMMY_MEALS.where((recipe) {
         if (_filters['gluten']! && !recipe.isGlutenFree) {
           return false;
         }
@@ -50,6 +60,23 @@ class _MyAppState extends State<MyApp> {
         }
         return true;
       }).toList();
+    });
+  }
+
+  void _toggleFavorite(String mealId) {
+    setState(() {
+      final existingIndex =
+          _favoritedMeals.indexWhere((recipe) => recipe.id == mealId);
+      if (existingIndex >= 0) {
+        setState(() {
+          _favoritedMeals.removeAt(existingIndex);
+        });
+      } else {
+        setState(() {
+          _favoritedMeals
+              .add(DUMMY_MEALS.firstWhere((recipe) => recipe.id == mealId));
+        });
+      }
     });
   }
 
@@ -103,11 +130,16 @@ class _MyAppState extends State<MyApp> {
       // home: CategoriesScreen(),
       initialRoute: '/',
       routes: {
-        '/': (ctx) => TabsScreen(),
+        '/': (ctx) => TabsScreen(
+              favoritedMeals: _favoritedMeals,
+            ),
         CategoryRecipesScreen.routeName: (ctx) => CategoryRecipesScreen(
               availableMeals: _availableMeals,
             ),
-        RecipeDetailScreen.routeName: (ctx) => RecipeDetailScreen(),
+        RecipeDetailScreen.routeName: (ctx) => RecipeDetailScreen(
+              toggleFavorites: _toggleFavorite,
+              isMealFavorite: _isMealFavorite,
+            ),
         FiltersScreen.routeName: (ctx) => FiltersScreen(
               setFilters: _setFilters,
               currentFilters: _filters,
